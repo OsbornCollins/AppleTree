@@ -5,9 +5,6 @@ package main
 import (
 	"fmt"
 	"net/http"
-	"strconv"
-
-	"github.com/julienschmidt/httprouter"
 )
 
 // createSchoolHandler for the "POST" /v1/schools" endpoint
@@ -17,13 +14,11 @@ func (app *application) createSchoolHandler(w http.ResponseWriter, r *http.Reque
 
 // showSchoolHandler for the "GET" /v1/schools/:id" endpoint
 func (app *application) showSchoolHandler(w http.ResponseWriter, r *http.Request) {
-	// Use the "ParamsFromContext()" function to get the request context as a slice
-	params := httprouter.ParamsFromContext(r.Context())
-	// Get the value of the "id" paramter
-	id, err := strconv.ParseInt(params.ByName("id"), 10, 64)
-	if err != nil || id < 1 {
+	id, err := app.readIDParam(r)
+	if err != nil {
 		http.NotFound(w, r)
 		return
 	}
+	// Displays the school ID
 	fmt.Fprintf(w, "show the details for school %d\n", id)
 }
